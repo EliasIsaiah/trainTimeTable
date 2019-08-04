@@ -38,7 +38,6 @@ $(document).ready(function () {
 
         $tr.append($name, $destination, $frequency, $nextArrival);
         $("tbody").append($tr);
-
     }
 
     function onSuccessFunc(data) {
