@@ -24,18 +24,15 @@ $(document).ready(function () {
 
     $("button.submitBtn").on("click", function (event) {
 
-        database.ref("/trains/").push({
-            trainName: trainNameInput.val(),
-            detination: destinationInput.val(),
-            frequency: frequencyInput.val(),
-            arrivalTime: arrivalTimeInput.val()
-        })
-        //this is what a comment looks like
-        event.preventDefault();
-        trainNameInput.val("");
-        destinationInput.val("");
-        frequencyInput.val("");
-        arrivalTimeInput.val("");
+        if (trainNameInput.val() && destinationInput.val() && frequencyInput.val() && arrivalTimeInput.val()) {
+            database.ref("/trains/").push({
+                trainName: trainNameInput.val(),
+                detination: destinationInput.val(),
+                frequency: frequencyInput.val(),
+                arrivalTime: arrivalTimeInput.val()
+            })
+            event.preventDefault();
+        }
     })
 
     $(window).keydown(function (event) {
