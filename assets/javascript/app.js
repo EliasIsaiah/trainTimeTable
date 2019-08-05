@@ -40,6 +40,9 @@ $(document).ready(function () {
         $("tbody").append($tr);
     }
 
+    //TODO:
+    //use "on child_added" to reduce the amount of code required to implement the following part
+
     function onSuccessFunc(data) {
 
         let trains = data.val();
@@ -50,8 +53,7 @@ $(document).ready(function () {
             trainKeys.forEach((key) => {
                 buildTableDOM(trains[key]);
             })
-        }
-        catch (error) {
+        } catch (error) {
             console.log("error:");
             console.log(error);
         }
