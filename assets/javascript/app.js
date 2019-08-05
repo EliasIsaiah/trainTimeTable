@@ -43,6 +43,9 @@ $(document).ready(function () {
     //TODO:
     //use "on child_added" to reduce the amount of code required to implement the following part
 
+    //TODO:
+    //use firebase.database.SerValue.TIMESTAMP to store the date added for the record pushed in
+
     function onSuccessFunc(data) {
 
         let trains = data.val();
