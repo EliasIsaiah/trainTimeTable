@@ -18,7 +18,7 @@ $(document).ready(function () {
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
-    var database = firebase.database();
+    let database = firebase.database();
 
     console.log(database);
 
