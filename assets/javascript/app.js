@@ -55,10 +55,6 @@ $(document).ready(function () {
     //implement moment.js
     //hint: use moment().format("X")
 
-    function onSuccessFunc(data) {
-
-    database.ref("trains").on("child_added", onSuccessFunc, onErrorFunc);
-
 
     // function onSuccessFunc(data) {
 
