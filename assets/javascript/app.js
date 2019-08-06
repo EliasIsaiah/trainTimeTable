@@ -20,7 +20,7 @@ $(document).ready(function () {
     let time = {
         objectCurrentTime: moment(),
 
-        getLastArrival: function(train){
+        getLastArrival: function (train) {
             return train.arrivalTime;
         },
 
@@ -46,27 +46,43 @@ $(document).ready(function () {
         $name.text(trainObject.trainName);
         $destination.text(trainObject.destination);
         $frequency.text(trainObject.frequency);
-        $nextArrival.text(calcNextArrival(trainObject.frequency, trainObject.arrivalTime));
-        $minutesAway.text()
+        $nextArrival.text(calcNextArrival(trainObject.frequency, trainObject.arrivalTime).trainArrival);
+        $minutesAway.text(calcNextArrival(trainObject.frequency, trainObject.arrivalTime).trainMinutes);
 
         $tr.append($name, $destination, $frequency, $nextArrival, $minutesAway);
         $("tbody").append($tr);
     }
 
-    function calcNextArrival(frequency, firstArrival){
-        console.log(moment());
+    function calcNextArrival(frequency, firstArrival) {
 
-        let mFirstArrival = moment.utc(firstArrival, "HH:mm");
-        let currentTime = moment.utc(moment(), "HH:mm");
-        console.log(mFirstArrival);
-        console.log(currentTime);
-        let diff = moment().diff(mFirstArrival);
-        console.log(diff);
         //next arrival = (currentTime + (frequency - (currentTime - firstArrival) % frequency)))
 
-        moment().subtract(firstArrival)
+        console.log(moment());
 
-        return moment()
+        let firstArrivalConverted = moment(firstArrival, "HH:mm").subtract(1, "years");
+        // console.log(`firstArrivalConverted: ${moment(firstArrival, "HH:mm").subtract(1, "years").format("hh:mm")}`)
+
+        let currentTime = moment();
+        // console.log(`Current Time: ${moment(currentTime).format("hh:mm")}`)
+
+        let timeDiff = moment().diff(moment(firstArrivalConverted), "minutes");
+        // console.log(`Difference in time: ${timeDiff}`)
+
+        let tRemainder = timeDiff % frequency;
+        // console.log(`tRemainder: ${tRemainder}`)
+
+        let tMinutesTillTrain = frequency - tRemainder;
+        // console.log(`Minutes till train: ${tMinutesTillTrain}`)
+
+        let nextTrainTime = moment().add(tMinutesTillTrain, "minutes");
+        // console.log(`Arrival Time: ${moment(nextTrainTime).format("hh:mm")}`)
+
+        // return moment(nextTrainTime).format("hh:mm");
+
+        return {
+            trainArrival: moment(nextTrainTime).format("hh:mm"),
+            trainMinutes: tMinutesTillTrain
+        }
     }
 
     database.ref("trains").on("value", function (data) {
@@ -122,24 +138,24 @@ $(document).ready(function () {
     }
 
 
-/*     $("button.submitBtn").on("click", function (event) {
-
-        if (trainNameInput.val() && destinationInput.val() && frequencyInput.val() && arrivalTimeInput.val()) {
-            database.ref("trains").push(
-                {
-                    trainName: trainNameInput.val(),
-                    destination: destinationInput.val(),
-                    frequency: frequencyInput.val(),
-                    arrivalTime: arrivalTimeInput.val()
-                },
-                function (error) {
-                    console.log("error:");
-                    console.log(error);
-                })
-            $("#trainForm")[0].reset();
-            event.preventDefault();
-        }
-    }) */
+    /*     $("button.submitBtn").on("click", function (event) {
+    
+            if (trainNameInput.val() && destinationInput.val() && frequencyInput.val() && arrivalTimeInput.val()) {
+                database.ref("trains").push(
+                    {
+                        trainName: trainNameInput.val(),
+                        destination: destinationInput.val(),
+                        frequency: frequencyInput.val(),
+                        arrivalTime: arrivalTimeInput.val()
+                    },
+                    function (error) {
+                        console.log("error:");
+                        console.log(error);
+                    })
+                $("#trainForm")[0].reset();
+                event.preventDefault();
+            }
+        }) */
 
     $("#trainForm").on("submit", function (event) {
         if (trainNameInput.val() && destinationInput.val() && frequencyInput.val() && arrivalTimeInput.val()) {
