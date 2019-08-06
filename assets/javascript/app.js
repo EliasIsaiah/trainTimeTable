@@ -17,23 +17,56 @@ $(document).ready(function () {
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
+    let time = {
+        objectCurrentTime: moment(),
+
+        getLastArrival: function(train){
+            return train.arrivalTime;
+        },
+
+    }
+
     const database = firebase.database();
 
     function buildTableDOM(trainObject) {
         // $("tbody").empty();
+        // let tableCells = ["trainName", "destination", "frequency", "minutesAway"];
+        // tableCells.forEach((newCell) => {
+        //     newCell = $("<td>");
+        //     newCell.text(trainObject.cellData)
+        // })
         let $tr = $("<tr>");
         let $name = $("<td>");
         let $destination = $("<td>");
         let $frequency = $("<td>");
         let $nextArrival = $("<td>");
+        let $minutesAway = $("<td>");
+
 
         $name.text(trainObject.trainName);
         $destination.text(trainObject.destination);
         $frequency.text(trainObject.frequency);
-        $nextArrival.text(trainObject.arrivalTime);
+        $nextArrival.text(calcNextArrival(trainObject.frequency, trainObject.arrivalTime));
+        $minutesAway.text()
 
-        $tr.append($name, $destination, $frequency, $nextArrival);
+        $tr.append($name, $destination, $frequency, $nextArrival, $minutesAway);
         $("tbody").append($tr);
+    }
+
+    function calcNextArrival(frequency, firstArrival){
+        console.log(moment());
+
+        let mFirstArrival = moment.utc(firstArrival, "HH:mm");
+        let currentTime = moment.utc(moment(), "HH:mm");
+        console.log(mFirstArrival);
+        console.log(currentTime);
+        let diff = moment().diff(mFirstArrival);
+        console.log(diff);
+        //next arrival = (currentTime + (frequency - (currentTime - firstArrival) % frequency)))
+
+        moment().subtract(firstArrival)
+
+        return moment()
     }
 
     database.ref("trains").on("value", function (data) {
