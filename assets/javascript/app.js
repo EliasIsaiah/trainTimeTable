@@ -36,7 +36,7 @@ $(document).ready(function () {
         $("tbody").append($tr);
     }
 
-    database.ref("trains/").on("value", function(data){
+    database.ref("trains").on("value", function(data){
         if(data.val() === null ) {
             $("tr.defaultText").show();
         } else {
@@ -45,6 +45,8 @@ $(document).ready(function () {
     }, function(error){
         $("tbody").html(`<tr><td>error: ${error}</td></tr>`);
     })
+
+    database.ref("trains").on("child_added", onSuccessFunc, onErrorFunc);
     //TODO:
     //use "on child_added" to reduce the amount of code required to implement the following part
 
