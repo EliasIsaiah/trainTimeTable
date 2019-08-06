@@ -6,22 +6,18 @@ $(document).ready(function () {
     const frequencyInput = $("#frequencyInput");
     const arrivalTimeInput = $("#arrivalTimeInput");
 
-    var firebaseConfig = {
+    const firebaseConfig = {
         apiKey: "AIzaSyC0Oe4tv19Y2QW7NtFT1I2Q3e9AEVQ04_w",
         authDomain: "train-time-table-3d650.firebaseapp.com",
         databaseURL: "https://train-time-table-3d650.firebaseio.com",
         projectId: "train-time-table-3d650",
-        storageBucket: "train-time-table-3d650.appspot.com",
         messagingSenderId: "526363497036",
         appId: "1:526363497036:web:b7e405d012e9233b"
     };
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
-    var database = firebase.database();
-
-
-    database.ref("trains").on("value", onSuccessFunc, onErrorFunc);
+    const database = firebase.database();
 
     function buildTableDOM(trainObject) {
         // $("tbody").empty();
@@ -40,35 +36,53 @@ $(document).ready(function () {
         $("tbody").append($tr);
     }
 
+    database.ref("trains/").on("value", function(data){
+        if(data.val() === null ) {
+            $("tr.defaultText").show();
+        } else {
+            $("tr.defaultText").hide();
+        }
+    }, function(error){
+        $("tbody").html(`<tr><td>error: ${error}</td></tr>`);
+    })
+
+    database.ref("trains").on("child_added", onSuccessFunc, onErrorFunc);
+
+
+    // function onSuccessFunc(data) {
+
+    //     let trains = data.val();
+
+    //     try {
+    //         let trainKeys = Object.keys(trains);
+
+    //         trainKeys.forEach((key) => {
+    //             buildTableDOM(trains[key]);
+    //         })
+    //     }
+    //     catch (error) {
+    //         console.log("error:");
+    //         console.log(error);
+    //     }
+
+    // }
+
     function onSuccessFunc(data) {
 
-        let trains = data.val();
-
-        try {
-            let trainKeys = Object.keys(trains);
-
-            trainKeys.forEach((key) => {
-                buildTableDOM(trains[key]);
-            })
-        }
-        catch (error) {
-            console.log("error:");
-            console.log(error);
-        }
-
+        console.log(data.val());
+        buildTableDOM(data.val());
     }
 
     function onErrorFunc(error) {
+        
         console.log("error:");
         console.log(error);
     }
 
 
-
     $("button.submitBtn").on("click", function (event) {
 
         if (trainNameInput.val() && destinationInput.val() && frequencyInput.val() && arrivalTimeInput.val()) {
-            $("tbody").empty();
             database.ref("trains").push({
                 trainName: trainNameInput.val(),
                 destination: destinationInput.val(),
