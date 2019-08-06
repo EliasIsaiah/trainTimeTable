@@ -36,13 +36,13 @@ $(document).ready(function () {
         $("tbody").append($tr);
     }
 
-    database.ref("trains").on("value", function(data){
-        if(data.val() === null ) {
+    database.ref("trains").on("value", function (data) {
+        if (data.val() === null) {
             $("tr.defaultText").show();
         } else {
             $("tr.defaultText").hide();
         }
-    }, function(error){
+    }, function (error) {
         $("tbody").html(`<tr><td>error: ${error}</td></tr>`);
     })
 
@@ -51,12 +51,12 @@ $(document).ready(function () {
 
     //TODO:
     //use firebase.database.SerValue.TIMESTAMP to store the date added for the record pushed in
-    
+
     //TODO:
     //implement moment.js
     //hint: use moment().format("X")
 
-    database.ref("trains").on("child_added", onSuccessFunc, onErrorFunc);
+    database.ref("trains").on("child_added", (data) => { buildTableDOM(data.val()) }, onErrorFunc);
 
     // function onSuccessFunc(data) {
 
@@ -76,21 +76,39 @@ $(document).ready(function () {
 
     // }
 
-    function onSuccessFunc(data) {
+    // function onSuccessFunc(data) {
 
-        console.log(data.val());
-        buildTableDOM(data.val());
-    }
+    //     console.log(data.val());
+    //     ;
+    // }
 
     function onErrorFunc(error) {
-        
+
         console.log("error:");
         console.log(error);
     }
 
 
-    $("button.submitBtn").on("click", function (event) {
+/*     $("button.submitBtn").on("click", function (event) {
 
+        if (trainNameInput.val() && destinationInput.val() && frequencyInput.val() && arrivalTimeInput.val()) {
+            database.ref("trains").push(
+                {
+                    trainName: trainNameInput.val(),
+                    destination: destinationInput.val(),
+                    frequency: frequencyInput.val(),
+                    arrivalTime: arrivalTimeInput.val()
+                },
+                function (error) {
+                    console.log("error:");
+                    console.log(error);
+                })
+            $("#trainForm")[0].reset();
+            event.preventDefault();
+        }
+    }) */
+
+    $("#trainForm").on("submit", function (event) {
         if (trainNameInput.val() && destinationInput.val() && frequencyInput.val() && arrivalTimeInput.val()) {
             database.ref("trains").push({
                 trainName: trainNameInput.val(),
@@ -101,6 +119,7 @@ $(document).ready(function () {
                 console.log("error:");
                 console.log(error);
             })
+            $("#trainForm")[0].reset();
             event.preventDefault();
         }
     })
