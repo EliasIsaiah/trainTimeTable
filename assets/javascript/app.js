@@ -46,17 +46,17 @@ $(document).ready(function () {
         $("tbody").html(`<tr><td>error: ${error}</td></tr>`);
     })
 
-    database.ref("trains").on("child_added", onSuccessFunc, onErrorFunc);
-    //TODO:
+    // TODO:
     //use "on child_added" to reduce the amount of code required to implement the following part
 
     //TODO:
     //use firebase.database.SerValue.TIMESTAMP to store the date added for the record pushed in
-
+    
     //TODO:
     //implement moment.js
     //hint: use moment().format("X")
 
+    database.ref("trains").on("child_added", onSuccessFunc, onErrorFunc);
 
     // function onSuccessFunc(data) {
 
