@@ -55,7 +55,7 @@ $(document).ready(function () {
 
     function calcNextArrival(frequency, firstArrival) {
 
-        //next arrival = (currentTime + (frequency - (currentTime - firstArrival) % frequency)))
+        //next arrival = (currentTime + (frequency - ((currentTime - firstArrival) % frequency)))
 
         console.log(moment());
 
