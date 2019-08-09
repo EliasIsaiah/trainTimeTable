@@ -5,7 +5,7 @@ $(document).ready(function () {
         $("div.errorModalBody").html(error + "<br>Please reload the page");
         $("#errorModal").modal('show');
     }
-    
+
     const trainNameInput = $("#trainNameInput");
     const destinationInput = $("#destinationInput");
     const frequencyInput = $("#frequencyInput");
@@ -22,10 +22,10 @@ $(document).ready(function () {
     // Initialize Firebase
     let database = null;
 
-    try{
+    try {
         firebase.initializeApp(firebaseConfig);
         database = firebase.database();
-    } catch(error) {
+    } catch (error) {
         onErrorFunc(error);
     }
 
@@ -44,12 +44,24 @@ $(document).ready(function () {
         $frequency.text(trainObject.frequency);
         $nextArrival.text(calcNextArrival(trainObject.frequency, trainObject.arrivalTime).trainArrival);
         $minutesAway.text(calcNextArrival(trainObject.frequency, trainObject.arrivalTime).trainMinutes);
-        if(calcNextArrival(trainObject.frequency, trainObject.arrivalTime).trainMinutes < 6) {
-            $minutesAway.css({
-                "color": "#FF0000",
-                "font-weight": "600",
-            });
-        }
+
+        // if(calcNextArrival(trainObject.frequency, trainObject.arrivalTime).trainMinutes < 11) {
+        //     $minutesAway.css({
+        //         "color": "#FF0000",
+        //         "font-weight": "600",
+        //     });
+        // }
+        // if(calcNextArrival(trainObject.frequency, trainObject.arrivalTime).trainMinutes < 6) {
+        //     $minutesAway.css({
+        //         "color": "#ffffff",
+        //     });
+        //     $tr.css({
+        //         "color": "#ffffff",
+        //         "transition": "all 0.5s ease",
+        //         "background": "#800020",
+        //         "font-weight": "600",
+        //     })
+        // }
 
         $tr.append($name, $destination, $frequency, $nextArrival, $minutesAway);
         $("tbody").append($tr);
@@ -96,7 +108,7 @@ $(document).ready(function () {
 
     database.ref("trains").on("child_added", (data) => { buildTableDOM(data) }, onErrorFunc);
 
-    setInterval( () => {
+    setInterval(() => {
         database.ref("trains").on("value", (data) => { updateTime(data) }, onErrorFunc);
     }, 1000)
 
@@ -108,13 +120,44 @@ $(document).ready(function () {
         try {
             let trainKeys = Object.keys(trains);
 
-            trainKeys.forEach((key) => {
+
+            trainKeys.forEach(key => {
                 $(`#${key} td.nextArrival`).text(calcNextArrival(trains[key].frequency, trains[key].arrivalTime).trainArrival);
                 $(`#${key} td.minutesAway`).text(calcNextArrival(trains[key].frequency, trains[key].arrivalTime).trainMinutes);
+
+                if (calcNextArrival(trains[key].frequency, trains[key].arrivalTime).trainMinutes < 11) {
+                    $(`#${key} td.minutesAway`).css({
+                        "color": "#FF0000",
+                        "font-weight": "600",
+                    });
+                }
+                if (calcNextArrival(trains[key].frequency, trains[key].arrivalTime).trainMinutes < 6) {
+                    $(`#${key} td.minutesAway`).css({
+                        "color": "#ffffff",
+                    });
+                    $(`#${key}`).css({
+                        "color": "#ffffff",
+                        "transition": "all 0.5s ease",
+                        "background": "#800020",
+                        "font-weight": "600",
+                    })
+                }
+                else {
+                    $(`#${key} td.minutesAway`).css({
+                        "color": "inherit",
+                        "font-weight": "inherit"
+                    });
+                    $(`#${key}`).css({
+                        "color": "inherit",
+                        "transition": "all 0.5s ease",
+                        "background": "inherit",
+                        "font-weight": "400",
+                    })
+                }
             })
         }
         catch (error) {
-            onErrorFunc(error);
+            console.log(error);
         }
     }
 
