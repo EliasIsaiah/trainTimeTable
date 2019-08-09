@@ -17,20 +17,11 @@ $(document).ready(function () {
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
-    let time = {
-        objectCurrentTime: moment(),
-
-        getLastArrival: function (train) {
-            return train.arrivalTime;
-        },
-
-    }
-
     const database = firebase.database();
 
     function buildTableDOM(trainObject) {
-
-        let $tr = $("<tr>");
+        console.log(trainObject);
+        let $tr = $("<tr>").attr("id", trainObject.key);
         let $name = $("<td>");
         let $destination = $("<td>");
         let $frequency = $("<td>");
@@ -51,8 +42,6 @@ $(document).ready(function () {
     function calcNextArrival(frequency, firstArrival) {
 
         //next arrival = (currentTime + (frequency - ((currentTime - firstArrival) % frequency)))
-
-        console.log(moment());
 
         let firstArrivalConverted = moment(firstArrival, "HH:mm").subtract(1, "years");
         // console.log(`firstArrivalConverted: ${moment(firstArrival, "HH:mm").subtract(1, "years").format("hh:mm")}`)
@@ -102,11 +91,12 @@ $(document).ready(function () {
 
     database.ref("trains").on("child_added", (data) => { buildTableDOM(data.val()) }, onErrorFunc);
 
-    setInterval(function(){
-        database.ref
-    })
+    setInterval( () => {
+        $("tbody").empty();
+        database.ref("trains").on("value", (data) => { updateTime(data) }, onErrorFunc);
+    }, 1000 * 60)
 
-    function onSuccessFunc(data) {
+    function updateTime(data) {
 
         let trains = data.val();
 
@@ -124,37 +114,11 @@ $(document).ready(function () {
 
     }
 
-    // function onSuccessFunc(data) {
-
-    //     console.log(data.val());
-    //     ;
-    // }
-
     function onErrorFunc(error) {
 
         console.log("error:");
         console.log(error);
     }
-
-
-    /*     $("button.submitBtn").on("click", function (event) {
-    
-            if (trainNameInput.val() && destinationInput.val() && frequencyInput.val() && arrivalTimeInput.val()) {
-                database.ref("trains").push(
-                    {
-                        trainName: trainNameInput.val(),
-                        destination: destinationInput.val(),
-                        frequency: frequencyInput.val(),
-                        arrivalTime: arrivalTimeInput.val()
-                    },
-                    function (error) {
-                        console.log("error:");
-                        console.log(error);
-                    })
-                $("#trainForm")[0].reset();
-                event.preventDefault();
-            }
-        }) */
 
     $("#trainForm").on("submit", function (event) {
         if (trainNameInput.val() && destinationInput.val() && frequencyInput.val() && arrivalTimeInput.val()) {
@@ -179,22 +143,22 @@ $(document).ready(function () {
         }
     })
 
-    let provider = new firebase.auth.GoogleAuthProvider();
+    // let provider = new firebase.auth.GoogleAuthProvider();
 
-    firebase.auth().signInWithPopup(provider).then(function (result) {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        var token = result.credential.accessToken;
-        // The signed-in user info.
-        var user = result.user;
-        // ...
-    }).catch(function (error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // The email of the user's account used.
-        var email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        var credential = error.credential;
-        // ...
-    });
+    // firebase.auth().signInWithPopup(provider).then(function (result) {
+    //     // This gives you a Google Access Token. You can use it to access the Google API.
+    //     var token = result.credential.accessToken;
+    //     // The signed-in user info.
+    //     var user = result.user;
+    //     // ...
+    // }).catch(function (error) {
+    //     // Handle Errors here.
+    //     var errorCode = error.code;
+    //     var errorMessage = error.message;
+    //     // The email of the user's account used.
+    //     var email = error.email;
+    //     // The firebase.auth.AuthCredential type that was used.
+    //     var credential = error.credential;
+    //     // ...
+    // });
 })
