@@ -93,16 +93,6 @@ $(document).ready(function () {
         onErrorFunc(error);
     })
 
-    // TODO:
-    //use "on child_added" to reduce the amount of code required to implement the following part
-
-    //TODO:
-    //use firebase.database.SerValue.TIMESTAMP to store the date added for the record pushed in
-
-    //TODO:
-    //implement moment.js
-    //hint: use moment().format("X")
-
     database.ref("trains").on("child_added", (data) => { buildTableDOM(data) }, onErrorFunc);
 
     setInterval( () => {
@@ -124,7 +114,6 @@ $(document).ready(function () {
         catch (error) {
             onErrorFunc(error);
         }
-
     }
 
     $("#trainForm").on("submit", function (event) {
@@ -149,23 +138,4 @@ $(document).ready(function () {
             return false;
         }
     })
-
-    // let provider = new firebase.auth.GoogleAuthProvider();
-
-    // firebase.auth().signInWithPopup(provider).then(function (result) {
-    //     // This gives you a Google Access Token. You can use it to access the Google API.
-    //     var token = result.credential.accessToken;
-    //     // The signed-in user info.
-    //     var user = result.user;
-    //     // ...
-    // }).catch(function (error) {
-    //     // Handle Errors here.
-    //     var errorCode = error.code;
-    //     var errorMessage = error.message;
-    //     // The email of the user's account used.
-    //     var email = error.email;
-    //     // The firebase.auth.AuthCredential type that was used.
-    //     var credential = error.credential;
-    //     // ...
-    // });
 })
