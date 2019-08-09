@@ -21,7 +21,7 @@ $(document).ready(function () {
     };
     // Initialize Firebase
     let database = null;
-    
+
     try{
         firebase.initializeApp(firebaseConfig);
         database = firebase.database();
@@ -121,10 +121,10 @@ $(document).ready(function () {
     $("#trainForm").on("submit", function (event) {
         if (trainNameInput.val() && destinationInput.val() && frequencyInput.val() && arrivalTimeInput.val()) {
             database.ref("trains").push({
-                trainName: trainNameInput.val(),
-                destination: destinationInput.val(),
-                frequency: frequencyInput.val(),
-                arrivalTime: arrivalTimeInput.val()
+                trainName: trainNameInput.val().trim(),
+                destination: destinationInput.val().trim(),
+                frequency: frequencyInput.val().trim(),
+                arrivalTime: arrivalTimeInput.val().trim()
             }, function (error) {
                 console.log(error);
             })
