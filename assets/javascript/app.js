@@ -124,7 +124,7 @@ $(document).ready(function () {
                 frequency: frequencyInput.val(),
                 arrivalTime: arrivalTimeInput.val()
             }, function (error) {
-                onErrorFunc(error)
+                console.log(error);
             })
             // updateTime();
             $("#trainForm")[0].reset();
