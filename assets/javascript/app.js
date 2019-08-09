@@ -1,6 +1,11 @@
 $(document).ready(function () {
 
+    function onErrorFunc(error) {
 
+        $("div.errorModalBody").html(error + "<br>Please reload the page");
+        $("#errorModal").modal('show');
+    }
+    
     const trainNameInput = $("#trainNameInput");
     const destinationInput = $("#destinationInput");
     const frequencyInput = $("#frequencyInput");
@@ -15,25 +20,35 @@ $(document).ready(function () {
         appId: "1:526363497036:web:b7e405d012e9233b"
     };
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+    let database = null;
+    try{
+        firebase.initializeApp(firebaseConfig);
+        database = firebase.database();
+    } catch(error) {
+        onErrorFunc(error);
+    }
 
-    const database = firebase.database();
 
-    function buildTableDOM(trainObject) {
-        console.log(trainObject);
-        let $tr = $("<tr>").attr("id", trainObject.key);
+    function buildTableDOM(data) {
+        let trainObject = data.val();
+        let $tr = $("<tr>");
         let $name = $("<td>");
         let $destination = $("<td>");
         let $frequency = $("<td>");
         let $nextArrival = $("<td>");
-        let $minutesAway = $("<td>");
-
+        let $minutesAway = $("<td>").attr("id", data.key);
 
         $name.text(trainObject.trainName);
         $destination.text(trainObject.destination);
         $frequency.text(trainObject.frequency);
         $nextArrival.text(calcNextArrival(trainObject.frequency, trainObject.arrivalTime).trainArrival);
         $minutesAway.text(calcNextArrival(trainObject.frequency, trainObject.arrivalTime).trainMinutes);
+        if(calcNextArrival(trainObject.frequency, trainObject.arrivalTime).trainMinutes < 6) {
+            $minutesAway.css({
+                "color": "#FF0000",
+                "font-weight": "600",
+            });
+        }
 
         $tr.append($name, $destination, $frequency, $nextArrival, $minutesAway);
         $("tbody").append($tr);
@@ -44,7 +59,6 @@ $(document).ready(function () {
         //next arrival = (currentTime + (frequency - ((currentTime - firstArrival) % frequency)))
 
         let firstArrivalConverted = moment(firstArrival, "HH:mm").subtract(1, "years");
-        // console.log(`firstArrivalConverted: ${moment(firstArrival, "HH:mm").subtract(1, "years").format("hh:mm")}`)
 
         let currentTime = moment();
         // console.log(`Current Time: ${moment(currentTime).format("hh:mm")}`)
@@ -61,10 +75,10 @@ $(document).ready(function () {
         let nextTrainTime = moment().add(tMinutesTillTrain, "minutes");
         // console.log(`Arrival Time: ${moment(nextTrainTime).format("hh:mm")}`)
 
-        // return moment(nextTrainTime).format("hh:mm");
+        // console.log(moment(nextTrainTime).format("HH:mm"));
 
         return {
-            trainArrival: moment(nextTrainTime).format("hh:mm"),
+            trainArrival: moment(nextTrainTime).format("hh:mm a"),
             trainMinutes: tMinutesTillTrain
         }
     }
@@ -76,7 +90,7 @@ $(document).ready(function () {
             $("tr.defaultText").hide();
         }
     }, function (error) {
-        $("tbody").html(`<tr><td>error: ${error}</td></tr>`);
+        onErrorFunc(error);
     })
 
     // TODO:
@@ -89,14 +103,14 @@ $(document).ready(function () {
     //implement moment.js
     //hint: use moment().format("X")
 
-    database.ref("trains").on("child_added", (data) => { buildTableDOM(data.val()) }, onErrorFunc);
+    database.ref("trains").on("child_added", (data) => { buildTableDOM(data) }, onErrorFunc);
 
     setInterval( () => {
-        $("tbody").empty();
         database.ref("trains").on("value", (data) => { updateTime(data) }, onErrorFunc);
-    }, 1000 * 60)
+    }, 1000)
 
     function updateTime(data) {
+        // $("tbody").empty();
 
         let trains = data.val();
 
@@ -104,20 +118,13 @@ $(document).ready(function () {
             let trainKeys = Object.keys(trains);
 
             trainKeys.forEach((key) => {
-                buildTableDOM(trains[key]);
+                $(`#${key}`).text(calcNextArrival(trains[key].frequency, trains[key].arrivalTime).trainMinutes);
             })
         }
         catch (error) {
-            console.log("error:");
-            console.log(error);
+            onErrorFunc(error);
         }
 
-    }
-
-    function onErrorFunc(error) {
-
-        console.log("error:");
-        console.log(error);
     }
 
     $("#trainForm").on("submit", function (event) {
@@ -128,9 +135,9 @@ $(document).ready(function () {
                 frequency: frequencyInput.val(),
                 arrivalTime: arrivalTimeInput.val()
             }, function (error) {
-                console.log("error:");
-                console.log(error);
+                onErrorFunc(error)
             })
+            // updateTime();
             $("#trainForm")[0].reset();
             event.preventDefault();
         }
