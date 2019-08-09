@@ -29,12 +29,7 @@ $(document).ready(function () {
     const database = firebase.database();
 
     function buildTableDOM(trainObject) {
-        // $("tbody").empty();
-        // let tableCells = ["trainName", "destination", "frequency", "minutesAway"];
-        // tableCells.forEach((newCell) => {
-        //     newCell = $("<td>");
-        //     newCell.text(trainObject.cellData)
-        // })
+
         let $tr = $("<tr>");
         let $name = $("<td>");
         let $destination = $("<td>");
@@ -107,21 +102,25 @@ $(document).ready(function () {
 
     database.ref("trains").on("child_added", (data) => { buildTableDOM(data.val()) }, onErrorFunc);
 
-    // function onSuccessFunc(data) {
+    setInterval(function(){
+        database.ref
+    })
 
-    //     let trains = data.val();
+    function onSuccessFunc(data) {
 
-    //     try {
-    //         let trainKeys = Object.keys(trains);
+        let trains = data.val();
 
-    //         trainKeys.forEach((key) => {
-    //             buildTableDOM(trains[key]);
-    //         })
-    //     }
-    //     catch (error) {
-    //         console.log("error:");
-    //         console.log(error);
-    //     }
+        try {
+            let trainKeys = Object.keys(trains);
+
+            trainKeys.forEach((key) => {
+                buildTableDOM(trains[key]);
+            })
+        }
+        catch (error) {
+            console.log("error:");
+            console.log(error);
+        }
 
     // }
 
