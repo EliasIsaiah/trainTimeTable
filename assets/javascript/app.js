@@ -21,6 +21,7 @@ $(document).ready(function () {
     };
     // Initialize Firebase
     let database = null;
+    
     try{
         firebase.initializeApp(firebaseConfig);
         database = firebase.database();
@@ -31,12 +32,12 @@ $(document).ready(function () {
 
     function buildTableDOM(data) {
         let trainObject = data.val();
-        let $tr = $("<tr>");
+        let $tr = $("<tr>").attr("id", data.key);
         let $name = $("<td>");
         let $destination = $("<td>");
         let $frequency = $("<td>");
-        let $nextArrival = $("<td>");
-        let $minutesAway = $("<td>").attr("id", data.key);
+        let $nextArrival = $("<td>").addClass("nextArrival");
+        let $minutesAway = $("<td>").addClass("minutesAway");
 
         $name.text(trainObject.trainName);
         $destination.text(trainObject.destination);
@@ -108,7 +109,8 @@ $(document).ready(function () {
             let trainKeys = Object.keys(trains);
 
             trainKeys.forEach((key) => {
-                $(`#${key}`).text(calcNextArrival(trains[key].frequency, trains[key].arrivalTime).trainMinutes);
+                $(`#${key} td.nextArrival`).text(calcNextArrival(trains[key].frequency, trains[key].arrivalTime).trainArrival);
+                $(`#${key} td.minutesAway`).text(calcNextArrival(trains[key].frequency, trains[key].arrivalTime).trainMinutes);
             })
         }
         catch (error) {
