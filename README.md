@@ -6,7 +6,7 @@ This is a simple website that utilizes a FireBase database on the backend to sto
 
 Every minute the database updates (without a page refresh required) and reflects how many minutes there are until any given train's next arrival.
 
-Below the table displaying the records currently in the database is a form for users who would like to add their own train records to the database for tracking purposes.
+Below the database table is a form for users who would like to add their own train records to the database for tracking purposes.
 
 There are two thresholds of warning to the user to indicate when a train is about to arrive/depart:
 
