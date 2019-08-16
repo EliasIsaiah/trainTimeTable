@@ -106,10 +106,10 @@ $(document).ready(function () {
         onErrorFunc(error);
     })
 
-    database.ref("trains").on("child_added", (data) => { buildTableDOM(data) }, onErrorFunc);
+    database.ref("trains").on("child_added", (data) => { buildTableDOM(data) }, onErrorFunc(error));
 
     setInterval(() => {
-        database.ref("trains").on("value", (data) => { updateTime(data) }, onErrorFunc);
+        database.ref("trains").on("value", (data) => { updateTime(data) }, onErrorFunc(error));
     }, 1000)
 
     function updateTime(data) {
