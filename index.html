@@ -26,13 +26,19 @@
 
 
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/4.1.0/firebaseui.css" />
+    <link type="text/css" rel="stylesheet" href="assets/css/eliasStyle.css">
 
     <title>Train TimeTable</title>
 </head>
 
 <body>
 
-    <div class="container">
+    <div class="container-fluid">
+        <div class="jumbotron jumbotron-fluid lessPadding">
+            <h1 class="display-4">"Did I Miss the Train?"</h1>
+            <p class="lead">Now you can find out</p>
+        </div>
+
         <div class="row">
             <table class="table">
                 <thead>
@@ -52,7 +58,7 @@
             </table>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col-lg-6 col-sm mx-auto">
                 <form id="trainForm">
                     <div class="form-group">
                         <label for="trainName">Train Name</label>
@@ -73,7 +79,7 @@
                         <input type="number" class="form-control" id="frequencyInput"
                             placeholder="Enter Train Frequency of Arrival Here" required>
                     </div>
-                    <button type="submit" class="submitBtn btn btn-primary">Submit</button>
+                    <button type="submit" class="submitBtn btn btn-primary mb-1">Submit</button>
                 </form>
             </div>
         </div>

@@ -124,35 +124,35 @@ $(document).ready(function () {
             trainKeys.forEach(key => {
                 $(`#${key} td.nextArrival`).text(calcNextArrival(trains[key].frequency, trains[key].arrivalTime).trainArrival);
                 $(`#${key} td.minutesAway`).text(calcNextArrival(trains[key].frequency, trains[key].arrivalTime).trainMinutes);
-
-                if (calcNextArrival(trains[key].frequency, trains[key].arrivalTime).trainMinutes < 11) {
+                let minutesToArrival = calcNextArrival(trains[key].frequency, trains[key].arrivalTime).trainMinutes;
+                if (minutesToArrival < 16 && minutesToArrival > 10) {
                     $(`#${key} td.minutesAway`).css({
                         "color": "#FF0000",
                         "font-weight": "600",
                     });
                 }
-                if (calcNextArrival(trains[key].frequency, trains[key].arrivalTime).trainMinutes < 6) {
+                else if (calcNextArrival(trains[key].frequency, trains[key].arrivalTime).trainMinutes < 11) {
                     $(`#${key} td.minutesAway`).css({
                         "color": "#ffffff",
                     });
                     $(`#${key}`).css({
                         "color": "#ffffff",
-                        "transition": "all 0.5s ease",
+                        "transition": "all 2.0s ease",
                         "background": "#800020",
                         "font-weight": "600",
                     })
                 }
                 else {
-                    $(`#${key} td.minutesAway`).css({
-                        "color": "inherit",
-                        "font-weight": "inherit"
-                    });
                     $(`#${key}`).css({
                         "color": "inherit",
                         "transition": "all 0.5s ease",
                         "background": "inherit",
                         "font-weight": "400",
-                    })
+                    });
+                    $(`#${key} td.minutesAway`).css({
+                        "color": "inherit",
+                        "font-weight": "inherit"
+                    });
                 }
             })
         }
